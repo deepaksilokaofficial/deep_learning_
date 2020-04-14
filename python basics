@@ -349,7 +349,6 @@ Expected Output:
 
 normalizeRows(x)	[[ 0. 0.6 0.8 ] [ 0.13736056 0.82416338 0.54944226]]
 Note: In normalizeRows(), you can try to print the shapes of x_norm and x, and then rerun the assessment. You'll find out that they have different shapes. This is normal given that x_norm takes the norm of each row of x. So x_norm has the same number of rows but only 1 column. So how did it work when you divided x by x_norm? This is called broadcasting and we'll talk about it now!
-
 1.5 - Broadcasting and the softmax function
 A very important concept to understand in numpy is "broadcasting". It is very useful for performing mathematical operations between arrays of different shapes. For the full details on broadcasting, you can read the official broadcasting documentation.
 
@@ -370,6 +369,7 @@ Softmax should be performed for all features of each training example, so softma
 However, in this coding practice, we're just focusing on getting familiar with Python, so we're using the common math notation m×nm×n
 where mm is the number of rows and nn is the number of columns.
 
+_exp
 # GRADED FUNCTION: softmax
 ​
 def softmax(x):
@@ -386,13 +386,17 @@ def softmax(x):
     
     ### START CODE HERE ### (≈ 3 lines of code)
     # Apply exp() element-wise to x. Use np.exp(...).
-    x_exp = None
+    x_exp = np.exp(x)
 ​
     # Create a vector x_sum that sums each row of x_exp. Use np.sum(..., axis = 1, keepdims = True).
-    x_sum = None
-    
+    x_sum = np.sum(x_exp,axis=1,keepdims=True)
     # Compute softmax(x) by dividing x_exp by x_sum. It should automatically use numpy broadcasting.
-    s = None
+    s = x_exp / x_sum
+    print(x_exp)
+    print(x_exp.shape)
+    print(x_sum)
+    print(x_sum.shape)
+    print(s.shape)
 ​
     ### END CODE HERE ###
     
@@ -401,6 +405,19 @@ x = np.array([
     [9, 2, 5, 0, 0],
     [7, 5, 0, 0 ,0]])
 print("softmax(x) = " + str(softmax(x)))
+[[  8.10308393e+03   7.38905610e+00   1.48413159e+02   1.00000000e+00
+    1.00000000e+00]
+ [  1.09663316e+03   1.48413159e+02   1.00000000e+00   1.00000000e+00
+    1.00000000e+00]]
+(2, 5)
+[[ 8260.88614278]
+ [ 1248.04631753]]
+(2, 1)
+(2, 5)
+softmax(x) = [[  9.80897665e-01   8.94462891e-04   1.79657674e-02   1.21052389e-04
+    1.21052389e-04]
+ [  8.78679856e-01   1.18916387e-01   8.01252314e-04   8.01252314e-04
+    8.01252314e-04]]
 Expected Output:
 
 softmax(x)	[[ 9.80897665e-01 8.94462891e-04 1.79657674e-02 1.21052389e-04 1.21052389e-04] [ 8.78679856e-01 1.18916387e-01 8.01252314e-04 8.01252314e-04 8.01252314e-04]]
@@ -459,6 +476,43 @@ for i in range(W.shape[0]):
         gdot[i] += W[i,j]*x1[j]
 toc = time.process_time()
 print ("gdot = " + str(gdot) + "\n ----- Computation time = " + str(1000*(toc - tic)) + "ms")
+dot = 278
+ ----- Computation time = 0.08296899999993279ms
+outer = [[ 81.  18.  18.  81.   0.  81.  18.  45.   0.   0.  81.  18.  45.   0.
+    0.]
+ [ 18.   4.   4.  18.   0.  18.   4.  10.   0.   0.  18.   4.  10.   0.
+    0.]
+ [ 45.  10.  10.  45.   0.  45.  10.  25.   0.   0.  45.  10.  25.   0.
+    0.]
+ [  0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
+    0.]
+ [  0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
+    0.]
+ [ 63.  14.  14.  63.   0.  63.  14.  35.   0.   0.  63.  14.  35.   0.
+    0.]
+ [ 45.  10.  10.  45.   0.  45.  10.  25.   0.   0.  45.  10.  25.   0.
+    0.]
+ [  0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
+    0.]
+ [  0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
+    0.]
+ [  0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
+    0.]
+ [ 81.  18.  18.  81.   0.  81.  18.  45.   0.   0.  81.  18.  45.   0.
+    0.]
+ [ 18.   4.   4.  18.   0.  18.   4.  10.   0.   0.  18.   4.  10.   0.
+    0.]
+ [ 45.  10.  10.  45.   0.  45.  10.  25.   0.   0.  45.  10.  25.   0.
+    0.]
+ [  0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
+    0.]
+ [  0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
+    0.]]
+ ----- Computation time = 0.20952800000006988ms
+elementwise multiplication = [ 81.   4.  10.   0.   0.  63.  10.   0.   0.   0.  81.   4.  25.   0.   0.]
+ ----- Computation time = 0.10758300000013321ms
+gdot = [ 20.29133396  24.74755144  16.18013987]
+ ----- Computation time = 0.15312800000000237ms
 x1 = [9, 2, 5, 0, 0, 7, 5, 0, 0, 0, 9, 2, 5, 0, 0]
 x2 = [9, 2, 2, 9, 0, 9, 2, 5, 0, 0, 9, 2, 5, 0, 0]
 ​
@@ -485,6 +539,28 @@ tic = time.process_time()
 dot = np.dot(W,x1)
 toc = time.process_time()
 print ("gdot = " + str(dot) + "\n ----- Computation time = " + str(1000*(toc - tic)) + "ms")
+dot = 278
+ ----- Computation time = 0.08915299999978643ms
+outer = [[81 18 18 81  0 81 18 45  0  0 81 18 45  0  0]
+ [18  4  4 18  0 18  4 10  0  0 18  4 10  0  0]
+ [45 10 10 45  0 45 10 25  0  0 45 10 25  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0]
+ [63 14 14 63  0 63 14 35  0  0 63 14 35  0  0]
+ [45 10 10 45  0 45 10 25  0  0 45 10 25  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0]
+ [81 18 18 81  0 81 18 45  0  0 81 18 45  0  0]
+ [18  4  4 18  0 18  4 10  0  0 18  4 10  0  0]
+ [45 10 10 45  0 45 10 25  0  0 45 10 25  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0]]
+ ----- Computation time = 0.07902600000009308ms
+elementwise multiplication = [81  4 10  0  0 63 10  0  0  0 81  4 25  0  0]
+ ----- Computation time = 0.06071300000010105ms
+gdot = [ 20.29133396  24.74755144  16.18013987]
+ ----- Computation time = 1.8344519999999864ms
 As you may have noticed, the vectorized implementation is much cleaner and more efficient. For bigger vectors/matrices, the differences in running time become even bigger.
 
 Note that np.dot() performs a matrix-matrix or matrix-vector multiplication. This is different from np.multiply() and the * operator (which is equivalent to .* in Matlab/Octave), which performs an element-wise multiplication.
@@ -498,6 +574,7 @@ The loss is used to evaluate the performance of your model. The bigger your loss
 L1 loss is defined as:
 L1(ŷ ,y)=∑i=0m|y(i)−ŷ (i)|(6)
 (6)L1(y^,y)=∑i=0m|y(i)−y^(i)|
+)
 # GRADED FUNCTION: L1
 ​
 def L1(yhat, y):
@@ -511,13 +588,14 @@ def L1(yhat, y):
     """
     
     ### START CODE HERE ### (≈ 1 line of code)
-    loss = None
+    loss = np.sum(abs(y-yhat))
     ### END CODE HERE ###
     
     return loss
 yhat = np.array([.9, 0.2, 0.1, .4, .9])
 y = np.array([1, 0, 0, 1, 1])
 print("L1 = " + str(L1(yhat,y)))
+L1 = 1.1
 Expected Output:
 
 L1	1.1
@@ -526,6 +604,7 @@ Exercise: Implement the numpy vectorized version of the L2 loss. There are sever
 L2 loss is defined as
 L2(ŷ ,y)=∑i=0m(y(i)−ŷ (i))2(7)
 (7)L2(y^,y)=∑i=0m(y(i)−y^(i))2
+)
 # GRADED FUNCTION: L2
 ​
 def L2(yhat, y):
@@ -539,13 +618,14 @@ def L2(yhat, y):
     """
     
     ### START CODE HERE ### (≈ 1 line of code)
-    loss = None
+    loss = np.sum(np.power(abs(y-yhat),2))
     ### END CODE HERE ###
     
     return loss
 yhat = np.array([.9, 0.2, 0.1, .4, .9])
 y = np.array([1, 0, 0, 1, 1])
 print("L2 = " + str(L2(yhat,y)))
+L2 = 0.43
 Expected Output:
 
 L2	0.43
@@ -556,3 +636,4 @@ What to remember:
 Vectorization is very important in deep learning. It provides computational efficiency and clarity.
 You have reviewed the L1 and L2 loss.
 You are familiar with many numpy functions such as np.sum, np.dot, np.multiply, np.maximum, etc...
+
